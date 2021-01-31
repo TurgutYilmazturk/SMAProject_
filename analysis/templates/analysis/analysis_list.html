@@ -1,22 +1,28 @@
 {% extends "base.html" %}
+{% load bootstrap3 %}
 
 {% block content %}
 
 {% if user.is_authenticated %}
   {% if h_analysis.count > 0 %}
     {% for analysis in h_analysis %}
-        <ol>
-          <li>{{analysis.user.username}}</li>
-          <li>{{user.username}}</li>
-          <li>{{analysis.topic}}</li>
-          <li>{{analysis.analysis_positive}}</li>
-          <li>{{analysis.analysis_negative}}</li>
-          <li>{{analysis.analysis_neutral}}</li>
-          <li>{{analysis.created_at}}</li>
+        <ol class="list-group">
+          <li class="list-group-item">{{analysis.user.username}}</li>
+          <li class="list-group-item">{{user.username}}</li>
+          <li class="list-group-item">{{analysis.topic}}</li>
+          <li class="list-group-item">{{analysis.analysis_positive}}</li>
+          <li class="list-group-item">{{analysis.analysis_negative}}</li>
+          <li class="list-group-item">{{analysis.analysis_neutral}}</li>
+          <li class="list-group-item">{{analysis.created_at}}</li>
         </ol>
     {% endfor %}
   {% else %}
-    <h1>No record. Go do some search!</h1>
+    <div class="container">
+      <div class="jumbotron">
+            <h3>No search record in your database.</h3>
+      </div>
+    </div>
+
   {% endif %}
 {% endif %}
 {% endblock %}

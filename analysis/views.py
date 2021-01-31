@@ -9,7 +9,9 @@ import praw
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from praw.models import MoreComments
-
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse,HttpResponseRedirect
+from django.shortcuts import redirect
 
 reddit = praw.Reddit(
      client_id="J5ECOUqkljDYvQ",
@@ -20,8 +22,6 @@ reddit = praw.Reddit(
  )
 
 sia = SentimentIntensityAnalyzer()
-from django.contrib.auth import get_user_model
-from django.http import HttpResponse
 
 # Create your views here.
 
@@ -38,9 +38,12 @@ class AnalysisView(generic.CreateView):
             self.object.analysis_negative=1
             self.object.user=self.request.user
             self.object.save()
-            return HttpResponse('<h1>YES</h1>')
+            return HttpResponseRedirect("results")
 
 
+
+class ResultsView(generic.TemplateView):
+    template_name="analysis/results.html"
 
 
 class HistoryView(generic.ListView):
