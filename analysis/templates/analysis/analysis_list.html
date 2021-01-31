@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+  {% if h_analysis.count > 0 %}
+    {% for analysis in h_analysis %}
+        <ol>
+          <li>{{analysis.user.username}}</li>
+          <li>{{user.username}}</li>
+          <li>{{analysis.topic}}</li>
+          <li>{{analysis.analysis_positive}}</li>
+          <li>{{analysis.analysis_negative}}</li>
+          <li>{{analysis.analysis_neutral}}</li>
+          <li>{{analysis.created_at}}</li>
+        </ol>
+    {% endfor %}
+  {% else %}
+    <h1>No record. Go do some search!</h1>
+  {% endif %}
+{% endif %}
+{% endblock %}
