@@ -2,21 +2,9 @@
 
 
 {% block content %}
-  {% if obj.bool %}
     <div class="container">
       <div class="jumbotron">
         <h3>Your query was valid , results are saved in your history page.</h3>
       </div>
     </div>
-    <div class="container">
-      <div class="jumbotron">
-      </div>
-    </div>
-  {% else %}
-  <div class="container">
-    <div class="jumbotron">
-      <h3>Your query was invalid.Please try again from analysis page.</h3>
-    </div>
-  </div>
-  {% endif %}
 {% endblock %}
