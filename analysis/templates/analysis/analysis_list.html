@@ -7,13 +7,11 @@
   {% if h_analysis.count > 0 %}
     {% for analysis in h_analysis %}
         <ol class="list-group">
-          <li class="list-group-item">{{analysis.user.username}}</li>
-          <li class="list-group-item">{{user.username}}</li>
-          <li class="list-group-item">{{analysis.topic}}</li>
-          <li class="list-group-item">{{analysis.analysis_positive}}</li>
-          <li class="list-group-item">{{analysis.analysis_negative}}</li>
-          <li class="list-group-item">{{analysis.analysis_neutral}}</li>
-          <li class="list-group-item">{{analysis.created_at}}</li>
+          <li class="list-group-item">Search Time:{{analysis.created_at}}</li>
+          <li class="list-group-item">Search Topic:{{analysis.topic}}</li>
+          <li class="list-group-item">Positive Comments:{{analysis.analysis_positive}}</li>
+          <li class="list-group-item">Negative Comments:{{analysis.analysis_negative}}</li>
+          <li class="list-group-item">Neutral Comments:{{analysis.analysis_neutral}}</li>
         </ol>
     {% endfor %}
   {% else %}

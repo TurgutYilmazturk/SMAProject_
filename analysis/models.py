@@ -20,9 +20,8 @@ class Analysis(models.Model):
     analysis_negative=models.IntegerField(blank=False,null=False)
     analysis_neutral=models.IntegerField(blank=False,null=False)
     created_at=models.DateTimeField(auto_now=True)
-    CHOICES1=[(1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5'),(6,'6'),(7,'7'),(8,'8'),(9,'9'),(10,'10'),(20,20),(50,50),(100,100)]
     CHOICES2=[('all','all'),('day','day'),('hour','hour'),('month','month'),('week','week'),('year','year')]
-    limit = models.IntegerField('Count of "Top Posts" to be searched in Reddit.Default value=all',choices=CHOICES1)
+    limit = models.IntegerField('Count of "Top Posts" to be searched in Reddit.')
     time_filter=models.CharField('Reddit API time interval',choices=CHOICES2,max_length=300)
 
     class Meta():

@@ -14,8 +14,12 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import redirect
 from django import template
 from prawcore import NotFound
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
 
+
+text=' '
 register = template.Library()
 reddit = praw.Reddit(
      client_id="bZHFNA6gZjvG_Q",
@@ -24,11 +28,12 @@ reddit = praw.Reddit(
 
  )
 
+
 sia = SentimentIntensityAnalyzer()
 
 # Create your views here.
 
-class AnalysisView(generic.CreateView):
+class AnalysisView(generic.CreateView,LoginRequiredMixin):
 
     fields=('topic','limit','time_filter')
     model=models.Analysis
@@ -37,16 +42,20 @@ class AnalysisView(generic.CreateView):
 
             self.object = form.save(commit=False)
             global reddit
+            global text
+            text=''
             top_posts = reddit.subreddit(self.object.topic).top(self.object.time_filter, limit=self.object.limit)
             try:
                 result_dict=AnalysisDone(top_posts)
-            except NotFound:
-                return HttpResponse("<h1>Hatalı<h1>")
 
-            if(result_dict['positive']==0 and result_dict['negative']==0 and result_dict['neutral'] <5):
-                return HttpResponseRedirect("<h1>Hatalı<h1>")
+            except NotFound:
+                return HttpResponseRedirect("fail")
+
+            if(result_dict['positive']==0 and result_dict['negative']==0 and result_dict['neutral'] <3):
+                return HttpResponseRedirect("fail")
 
             else:
+                wordCloud(text,self.object.topic,self.request.user.id,str(self.object.created_at))
                 self.object.user=self.request.user
                 self.object.analysis_neutral=result_dict['neutral']
                 self.object.analysis_negative=result_dict['negative']
@@ -55,15 +64,22 @@ class AnalysisView(generic.CreateView):
                 return HttpResponseRedirect("results")
 
 
+class FailView(generic.TemplateView,LoginRequiredMixin):
+    template_name="analysis/fail.html"
 
 
-
-
-class ResultsView(generic.TemplateView):
+class ResultsView(generic.TemplateView,LoginRequiredMixin):
     template_name="analysis/results.html"
+    def get_context_data(self, **kwargs):
+        analysis=models.Analysis.objects.filter(user=self.request.user).order_by('-created_at')[0]
+        context = super(ResultsView, self).get_context_data(**kwargs)
+        context['positive'] = analysis.analysis_positive
+        context['negative'] = analysis.analysis_negative
+        context['neutral']=analysis.analysis_neutral
+        context['topic']=analysis.topic
+        return context
 
-
-class HistoryView(generic.ListView):
+class HistoryView(generic.ListView,LoginRequiredMixin):
     context_object_name='h_analysis'
     model=models.Analysis
 
@@ -80,6 +96,8 @@ def AnalysisDone(top_posts):
         for count, top_level_comment in enumerate(submission_comm.comments):
             count_comm = 0
             try :
+                global text
+                text+=top_level_comment.body+','
                 nltk_sentiment(top_level_comment.body, sub_entries_nltk)
                 replies_of(top_level_comment,
                            count_comm,
@@ -112,7 +130,7 @@ def nltk_sentiment(review, sub_entries_nltk):
         return 'Neutral'
 
 
-def replies_of(top_level_comment, count_comment, sub_entries_textblob, sub_entries_nltk):
+def replies_of(top_level_comment, count_comment, sub_entries_nltk):
     if len(top_level_comment.replies) == 0:
         count_comment = 0
         return
@@ -123,4 +141,12 @@ def replies_of(top_level_comment, count_comment, sub_entries_textblob, sub_entri
                 nltk_sentiment(comment.body, sub_entries_nltk)
             except:
                 continue
-            replies_of(comment, count_comment, sub_entries_textblob,sub_entries_nltk)
+            replies_of(comment, count_comment ,sub_entries_nltk)
+#
+def wordCloud(text,topic,user,created_at):
+    wordcloud = WordCloud(width=1280, height=720, margin=0, prefer_horizontal=0.8).generate(text)
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis("off")
+    #fig=plt.figure()
+    plt.savefig(topic+"_"+str(user)+"_"+created_at+'.png', dpi=200, bbox_inches='tight', pad_inches = 0)
+    #return fig
