@@ -55,7 +55,7 @@ class AnalysisView(generic.CreateView,LoginRequiredMixin):
                 return HttpResponseRedirect("fail")
 
             else:
-                wordCloud(text,self.object.topic,self.request.user.id,str(self.object.created_at))
+                # wordCloud(text,self.object.topic,self.request.user.id,str(self.object.created_at))
                 self.object.user=self.request.user
                 self.object.analysis_neutral=result_dict['neutral']
                 self.object.analysis_negative=result_dict['negative']
@@ -143,10 +143,10 @@ def replies_of(top_level_comment, count_comment, sub_entries_nltk):
                 continue
             replies_of(comment, count_comment ,sub_entries_nltk)
 #
-def wordCloud(text,topic,user,created_at):
-    wordcloud = WordCloud(width=1280, height=720, margin=0, prefer_horizontal=0.8).generate(text)
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis("off")
-    #fig=plt.figure()
-    plt.savefig(topic+"_"+str(user)+"_"+created_at+'.png', dpi=200, bbox_inches='tight', pad_inches = 0)
-    #return fig
+# def wordCloud(text,topic,user,created_at):
+#     wordcloud = WordCloud(width=1280, height=720, margin=0, prefer_horizontal=0.8).generate(text)
+#     plt.imshow(wordcloud, interpolation='bilinear')
+#     plt.axis("off")
+#     #fig=plt.figure()
+#     plt.savefig(topic+"_"+str(user)+"_"+created_at+'.png', dpi=200, bbox_inches='tight', pad_inches = 0)
+#     #return fig

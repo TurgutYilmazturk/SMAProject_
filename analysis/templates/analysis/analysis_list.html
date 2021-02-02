@@ -5,20 +5,27 @@
 
 {% if user.is_authenticated %}
   {% if h_analysis.count > 0 %}
-    {% for analysis in h_analysis %}
-        <ol class="list-group">
-          <li class="list-group-item">Search Time:{{analysis.created_at}}</li>
-          <li class="list-group-item">Search Topic:{{analysis.topic}}</li>
-          <li class="list-group-item">Positive Comments:{{analysis.analysis_positive}}</li>
-          <li class="list-group-item">Negative Comments:{{analysis.analysis_negative}}</li>
-          <li class="list-group-item">Neutral Comments:{{analysis.analysis_neutral}}</li>
-        </ol>
-    {% endfor %}
+
+      {% for analysis in h_analysis %}
+          <ol class="list-group">
+
+              <li class="list-group-item list-group-item-warning"><b>Search Time:</b> {{analysis.created_at}}</li>
+              <li class="list-group-item list-group-item-success"><b>Search Topic:</b> {{analysis.topic}}</li>
+              <li class="list-group-item list-group-item-primary"><b>Positive Comments:</b> {{analysis.analysis_positive}}</li>
+              <li class="list-group-item list-group-item-danger"><b>Negative Comments:</b> {{analysis.analysis_negative}}</li>
+              <li class="list-group-item list-group-item-warning"><b>Neutral Comments:</b> {{analysis.analysis_neutral}}</li>
+              
+              <br><br><br><br>
+          </ol>
+      {% endfor %}
+
   {% else %}
     <div class="container">
-      <div class="jumbotron">
+
             <h3>No search record in your database.</h3>
-      </div>
+            <h2>Go to analysis page to do some search</h2>
+
+
     </div>
 
   {% endif %}
