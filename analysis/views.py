@@ -6,16 +6,15 @@ from . import models
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 import praw
-import nltk
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
+# import nltk
+# from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from textblob import TextBlob
 from praw.models import MoreComments
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import redirect
 from django import template
 from prawcore import NotFound
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
 
 
 
@@ -29,7 +28,7 @@ reddit = praw.Reddit(
  )
 
 
-sia = SentimentIntensityAnalyzer()
+# sia = SentimentIntensityAnalyzer()
 
 # Create your views here.
 
@@ -90,7 +89,7 @@ class HistoryView(generic.ListView,LoginRequiredMixin):
 def AnalysisDone(top_posts):
     for submission in top_posts:
         sub_entries_nltk = {'negative': 0, 'positive' : 0, 'neutral' : 0}
-        nltk_sentiment(submission.title, sub_entries_nltk)
+        text_blob_sentiment(submission.title, sub_entries_nltk)
         submission_comm = reddit.submission(id=submission.id)
 
         for count, top_level_comment in enumerate(submission_comm.comments):
@@ -98,7 +97,7 @@ def AnalysisDone(top_posts):
             try :
                 global text
                 text+=top_level_comment.body+','
-                nltk_sentiment(top_level_comment.body, sub_entries_nltk)
+                text_blob_sentiment(top_level_comment.body, sub_entries_nltk)
                 replies_of(top_level_comment,
                            count_comm,
                            sub_entries_nltk)
@@ -108,25 +107,18 @@ def AnalysisDone(top_posts):
         return sub_entries_nltk
 
 
-def nltk_sentiment(review, sub_entries_nltk):
-    vs = sia.polarity_scores(review)
-    if not vs['neg'] > 0.05:
-        if vs['pos'] - vs['neg'] > 0:
-            sub_entries_nltk['positive'] = sub_entries_nltk['positive'] + 1
+def text_blob_sentiment(review, sub_entries_textblob):
+    analysis = TextBlob(review)
+    if analysis.sentiment.polarity >= 0.0001:
+        if analysis.sentiment.polarity > 0:
+            sub_entries_textblob['positive']=sub_entries_textblob['positive']+1
             return 'Positive'
-        else:
-            sub_entries_nltk['neutral'] = sub_entries_nltk['neutral'] + 1
-            return 'Neutral'
-
-    elif not vs['pos'] > 0.05:
-        if vs['pos'] - vs['neg'] <= 0:
-            sub_entries_nltk['negative'] = sub_entries_nltk['negative'] + 1
+    elif analysis.sentiment.polarity <= -0.0001:
+        if analysis.sentiment.polarity <= 0:
+            sub_entries_textblob['negative']=sub_entries_textblob['negative'] + 1
             return 'Negative'
-        else:
-            sub_entries_nltk['neutral'] = sub_entries_nltk['neutral'] + 1
-            return 'Neutral'
     else:
-        sub_entries_nltk['neutral'] = sub_entries_nltk['neutral'] + 1
+        sub_entries_textblob['neutral']=sub_entries_textblob['neutral'] + 1
         return 'Neutral'
 
 
@@ -138,7 +130,7 @@ def replies_of(top_level_comment, count_comment, sub_entries_nltk):
         for num, comment in enumerate(top_level_comment.replies):
             try:
                 count_comment += 1
-                nltk_sentiment(comment.body, sub_entries_nltk)
+                text_blob_sentiment(comment.body, sub_entries_nltk)
             except:
                 continue
             replies_of(comment, count_comment ,sub_entries_nltk)

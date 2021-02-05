@@ -25,7 +25,7 @@ SECRET_KEY = 'wzf22ll&&4_78@-^26zairpr0bmu92kfl1pb$37(kqb2gtde+e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.turgutcemyilmazturk.com']
+ALLOWED_HOSTS = ['.turgutcemyilmazturk.com','localhost','127.0.0.1']
 
 
 # Application definition

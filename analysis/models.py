@@ -3,7 +3,6 @@ from django.db import models
 from django.contrib.auth import get_user_model
 import requests
 from django.utils.text import slugify
-import misaka
 from django import template,forms
 
 
