@@ -1,22 +1,21 @@
-asgiref @ file:///tmp/build/80754af9/asgiref_1605055780383/work
+asgiref==3.3.1
 certifi==2020.12.5
 cffi==1.14.4
 chardet==4.0.0
 click==7.1.2
-Django @ file:///tmp/build/80754af9/django_1612212120213/work
+Django==3.1.6
 django-bootstrap3==14.2.0
 idna==2.10
 joblib==1.0.0
 nltk==3.5
 praw==7.1.2
 prawcore==1.5.0
-psycopg2 @ file:///C:/ci/psycopg2_1612298803839/work
 pycparser==2.20
-pytz @ file:///tmp/build/80754af9/pytz_1612215392582/work
+pytz==2021.1
 regex==2019.11.1
 requests==2.25.1
 six==1.15.0
-sqlparse @ file:///tmp/build/80754af9/sqlparse_1602184451250/work
+sqlparse==0.4.1
 textblob==0.15.3
 tqdm==4.56.0
 update-checker==0.18.0

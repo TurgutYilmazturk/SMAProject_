@@ -21,9 +21,11 @@ from prawcore import NotFound
 text=' '
 register = template.Library()
 reddit = praw.Reddit(
-     client_id="bZHFNA6gZjvG_Q",
-     client_secret="1l-pgLeHaR-D66hrm4m58DZHpiZBkQ",
-     user_agent="www.turgutcemyilmazturk.com by /tubikcan",
+     client_id="aAVvsDiycH_NPQ",
+     client_secret="rXl4XeCP7aeTCLJInIneoELl_fqNSg",
+     user_agent="www.turgutcemyilmazturk.com by /u/tubikcan",
+     redirect_uri="https://www.turgutcemyilmazturk.com",
+
 
  )
 
